@@ -1,6 +1,6 @@
 Thanks for your attention. There are a few things needed to be clarified before using. 
 
-Aim - To calculate how much carbon dioxide different regions and sectors are responsible for based on what they consume
+Aim - To calculate how much CO2 different regions and sectors are responsible for based on what they consume
 Tool - Pymrio Python library 
 Data - 2023 Carbon emission data from _Carbon Monitor_ (https://carbonmonitor.org/) and IO packages from _EXIOBASE 3.8.2_ (https://zenodo.org/records/14614930)
 Aggregation Rule - Combine detailed economic sectors and geographic regions based on _Carbon Monitor_ 
