@@ -67,7 +67,7 @@ for region, indices in region_country_indices.items():
     print(f"{region} 包含国家数: {len(indices)}")
 
 # === 3. 读取EXIOBASE 2022数据 ===
-base_path = "/Users/guoguo/Desktop/碳排放科研/1970-2022consume/IOT_1995_ixi"
+base_path = "/Users/guoguo/Desktop/碳排放科研/2023consume/IOT_2023_ixi"
 Z_path = f"{base_path}Z.txt"
 Y_path = f"{base_path}Y.txt"
 F_path = f"{base_path}satellite/F.txt"
@@ -156,24 +156,24 @@ Y_df = pd.DataFrame(Y_agg, index=multi_cols, columns=Y_multi_cols)
 F_df = pd.DataFrame(F_agg, index=F_raw.index, columns=multi_cols)
 
 # === 7. 创建IOSystem ===
-print("正在创建2022年的IOSystem...")
-io_2022 = pymrio.IOSystem(Z=Z_df, Y=Y_df)
-io_2022.emissions = pymrio.Extension(name='Emissions', F=F_df)
-io_2022.emissions.unit = pd.DataFrame(
+print("正在创建2023年的IOSystem...")
+io_2023 = pymrio.IOSystem(Z=Z_df, Y=Y_df)
+io_2023.emissions = pymrio.Extension(name='Emissions', F=F_df)
+io_2023.emissions.unit = pd.DataFrame(
     ['Kt'] * F_agg.shape[0],
     index=F_raw.index,
     columns=['unit']
 )
 
 # 保存IOSystem
-output_path = '/Users/guoguo/Desktop/碳排放科研/1970-2022consume/processed_io_1995_agg'
+output_path = '/Users/guoguo/Desktop/碳排放科研/2023consume/processed_io_2023_agg'
 os.makedirs(output_path, exist_ok=True)
-io_2022.save_all(path=output_path)
+io_2023.save_all(path=output_path)
 print(f"✅ IOSystem已保存至: {output_path}")
 
 # === 8. 处理2023年Carbon Monitor数据 ===
 print("正在处理2023年Carbon Monitor数据...")
-cm_path_2023 = "/Users/guoguo/Desktop/碳排放科研/1970-2022consume/carbon-monitor-GLOBAL1995.xlsx"
+cm_path_2023 = "/Users/guoguo/Desktop/碳排放科研/1970-2022consume/carbon-monitor-GLOBAL.xlsx"
 df_cm = pd.read_excel(cm_path_2023)
 df_2023 = (
     df_cm.groupby(["country", "sector"])["MtCO2 per day"]
@@ -196,13 +196,13 @@ print(f"2023 EU27 & UK 数据总和: {F_2023_df.iloc[:, eu_idx * nSectors:(eu_id
 
 # === 9. 计算2023年消费端排放 ===
 print("正在计算2023年消费端排放...")
-io_2022.emissions = pymrio.Extension(name="Emissions_2023", F=F_2023_df)
-io_2022.emissions.unit = pd.DataFrame(
+io_2023.emissions = pymrio.Extension(name="Emissions_2023", F=F_2023_df)
+io_2023.emissions.unit = pd.DataFrame(
     ['MtCO2'] * F_2023_df.shape[0],
     index=F_2023_df.index,
     columns=['unit']
 )
-io_2022.calc_all()
+io_2023.calc_all()
 D_cba_2023 = io_2022.emissions.D_cba
 print(f"D_cba_2023中EU27 & UK数据总和: {D_cba_2023.iloc[:, eu_idx * n_fd_categories:(eu_idx + 1) * n_fd_categories].sum().sum()}")
 output_dir = "/Users/guoguo/Desktop/碳排放科研/2023-2024consume/results"
